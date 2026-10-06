@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Emacs Key Dojo</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>&#9000; Emacs Key Dojo</h1>
+  <p class="tagline">Learn real Emacs keybindings by pressing them &mdash; every key here is
+    pulled straight from <code>research-emacs/docs/KEYBOARD.md</code>, individually checked
+    against a real Emacs build.</p>
+</header>
+
+<main>
+  <section id="screen-home">
+    <div id="tier-list" class="tier-list"></div>
+    <p class="note">
+      Play with your <strong>real keyboard</strong>. Your browser may intercept a few
+      combinations it reserves for itself (e.g. <kbd>Ctrl+W</kbd> closing a tab,
+      <kbd>Ctrl+N</kbd> opening a window) &mdash; if a key seems to do nothing, that is
+      almost always why, not a bug in the game.
+    </p>
+  </section>
+
+  <section id="screen-game" class="hidden">
+    <div class="hud">
+      <span id="game-tier-label"></span>
+      <span>Score: <b id="hud-score">0</b></span>
+      <span>Streak: <b id="hud-streak">0</b></span>
+      <span id="hud-lives" class="lives"></span>
+      <button id="btn-quit" class="link-btn">Quit to menu</button>
+    </div>
+    <div class="timer-track"><div id="timer-bar" class="timer-fill"></div></div>
+
+    <div id="prompt-card" class="prompt-card">
+      <div id="prompt-category" class="prompt-category"></div>
+      <div id="prompt-desc" class="prompt-desc"></div>
+      <div id="prompt-command" class="prompt-command"></div>
+      <div id="chord-progress" class="chord-progress"></div>
+      <div id="feedback" class="feedback"></div>
+    </div>
+
+    <button id="btn-hint" class="hint-btn">Show hint (costs 10 points)</button>
+    <div id="hint-box" class="hint-box hidden"></div>
+
+    <div id="keyboard" class="keyboard"></div>
+  </section>
+
+  <section id="screen-over" class="hidden">
+    <h2>Session over</h2>
+    <p>Score: <b id="over-score"></b></p>
+    <p>Correct: <b id="over-rounds"></b></p>
+    <p>Best score on this level: <b id="over-best"></b></p>
+    <p id="over-unlock" class="unlock-note"></p>
+    <button id="btn-retry" class="primary-btn">Play again</button>
+    <button id="btn-home" class="primary-btn secondary">Back to levels</button>
+  </section>
+</main>
+
+<footer>
+  Content source: <code>research-emacs/docs/KEYBOARD.md</code> &middot;
+  finger-placement guidance from that project's own <code>docs/TYPING.md</code>.
+</footer>
+
+<script src="keybindings.js"></script>
+<script src="emacs-notation.js"></script>
+<script src="keyboard-layout.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
