@@ -102,3 +102,32 @@ kbd { background: #2c2e45; border: 1px solid var(--border); border-radius: 4px; 
   padding: 10px 22px; font-size: 1rem; font-weight: 700; cursor: pointer; margin: 6px;
 }
 .primary-btn.secondary { background: none; border: 1px solid var(--border); color: var(--fg); }
+
+/* ---- shifted symbol labels on the virtual keyboard ---- */
+.kb-key { position: relative; }
+.kb-shift { position: absolute; top: 2px; left: 5px; font-size: 0.6em; opacity: 0.55; line-height: 1; }
+.kb-key.hl .kb-shift { opacity: 1; }
+
+/* ---- demo buffer: a fake Emacs window that shows what the command does ---- */
+.demo-buffer {
+  margin: 14px auto 18px; max-width: 760px; border: 1px solid #3a3f5c; border-radius: 8px;
+  overflow: hidden; background: #15172a; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 13px; text-align: left;
+}
+.demo-text { margin: 0; padding: 10px 12px; min-height: 10.5em; line-height: 1.45; color: #d6d9ee; white-space: pre; overflow-x: auto; }
+.demo-cursor { background: #e8c070; color: #15172a; border-radius: 2px; }
+.demo-cursor.flash { animation: demo-flash 0.6s ease-out; }
+@keyframes demo-flash { 0% { box-shadow: 0 0 0 6px rgba(232,192,112,0.6); } 100% { box-shadow: 0 0 0 0 rgba(232,192,112,0); } }
+.demo-region { background: rgba(108, 140, 255, 0.28); }
+.demo-modeline { background: #2b3050; color: #c9cde6; padding: 3px 12px; font-size: 12px; }
+.demo-echo { padding: 4px 12px; min-height: 1.5em; color: #9fe39f; font-size: 12px; }
+
+/* ---- "In Emacs" explanation panel ---- */
+.explain { margin: 14px auto 0; max-width: 760px; text-align: left; font-size: 0.92em; line-height: 1.45;
+  background: #1c1f36; border: 1px solid #3a3f5c; border-left: 3px solid #6c8cff; border-radius: 8px; padding: 10px 14px; }
+.explain-title { font-weight: 600; margin-bottom: 4px; }
+.explain-title code { color: #9fb4ff; }
+.explain-where { font-weight: 400; opacity: 0.65; font-size: 0.85em; margin-left: 6px; }
+.explain-body { color: #d6d9ee; }
+.explain-terms { margin: 6px 0 0; padding-left: 18px; opacity: 0.8; font-size: 0.9em; }
+.explain-terms li { margin: 1px 0; }

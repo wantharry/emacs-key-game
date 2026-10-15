@@ -17,12 +17,24 @@ Just open `index.html` in a browser. No server, no build step, no install.
 - Score, streak, a 10-second-per-round timer, and 3 lives (lost only on a timeout,
   not a wrong keypress --- a mistake just costs your streak and reveals a hint, so
   it's a lesson, not a dead end).
-- 4 levels, unlocked in order as you get 15 keys correct on the current one. Progress
-  and best scores are saved in your browser (`localStorage`), so they survive a reload.
+- 5 levels, **all open from the start** --- jump into whichever you feel like drilling.
+  Getting 15 correct marks a level as "mastered" on the menu. Progress and best scores
+  are saved in your browser (`localStorage`), so they survive a reload.
+- **Level 5: Full Keyboard** covers every number and symbol key --- the stock Emacs
+  commands on them (`M-<`, `M-%`, `C-x (`, `C-x ^`, digit arguments...), every `M-`
+  and `C-M-` letter binding, Backspace/Delete/Enter/Esc, and plain "type this
+  character" rounds for every shifted symbol (`! @ # $ % ^ & * ( ) _ + { } | : " < > ? ~`).
+- An **"In Emacs" panel** under each prompt names the command (`M-x ...`), says which
+  keymap it lives in, explains what it does and when you'd use it, and decodes the
+  Emacs jargon in its name (kill, yank, point, mark, sexp...).
+- A **live mini-buffer** shows a small Emacs Lisp file. When you get a key right the
+  command is actually applied to it: the cursor moves for movement commands, text is
+  cut for kill commands, the region lights up when you set the mark, and so on, with
+  an Emacs-style mode line and echo area.
 
 ## Where the content comes from
 
-Every single key, command, and description is pulled directly from
+Levels 1--4: every key, command, and description is pulled directly from
 [`research-emacs`](../research-emacs)'s own `docs/KEYBOARD.md` by
 `extract-keybindings.py`, which writes `keybindings.js`. That means:
 
@@ -42,6 +54,10 @@ To refresh the content after `docs/KEYBOARD.md` changes:
 ```sh
 python3 extract-keybindings.py ../research-emacs/docs/KEYBOARD.md > keybindings.js
 ```
+
+Level 5 (`all-keys.js`) is hand-written rather than generated, from the standard
+global bindings of a stock GNU Emacs 28+, since the source doc only covers the
+keys it chose to teach, and the point of that level is coverage of the whole keyboard.
 
 ## Finger placement
 
@@ -72,6 +88,9 @@ from the game/UI code in `game.js`, so it can be read (or reused) on its own.
 | `emacs-notation.js` | parsing Emacs key notation into real browser key matches, plus finger-placement guidance --- pure logic, no DOM |
 | `keyboard-layout.js` | builds the on-screen virtual keyboard (visual only, not clickable) |
 | `game.js` | game state, scoring, rounds, levels, localStorage save/load |
+| `all-keys.js` | hand-written Level 5 content: every number/symbol/Alt/Ctrl+Alt key |
+| `explain.js` | the "In Emacs" panel: per-command explanations and a jargon glossary |
+| `demo-buffer.js` | the mini Emacs buffer simulator that shows what each command does |
 
 ## A real, known limitation
 
@@ -79,7 +98,9 @@ Your browser may intercept some key combinations before the game ever sees them
 (`Ctrl+W` closing the tab, `Ctrl+N` opening a window, and a few others are reserved
 by browsers for security and cannot be overridden by any page). If a key seems to do
 nothing, that's almost always why, not a bug in the game --- there's a note about this
-on the title screen.
+on the title screen. On macOS, Option+key often types a special character (Option+1
+is ¡) unless Option is set to act as Meta/Alt; `Esc` then the key is the Emacs
+equivalent of any `M-` chord if that is a problem.
 
 ## Verification
 

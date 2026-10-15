@@ -16,12 +16,16 @@
 
 <main>
   <section id="screen-home">
+    <p class="note">All five levels are open &mdash; jump into whichever you feel like drilling.
+      Level 5 covers <strong>every</strong> number, symbol, Alt and Ctrl+Alt key, and shows a live
+      mini-buffer so you can watch what each command does.</p>
     <div id="tier-list" class="tier-list"></div>
     <p class="note">
       Play with your <strong>real keyboard</strong>. Your browser may intercept a few
       combinations it reserves for itself (e.g. <kbd>Ctrl+W</kbd> closing a tab,
       <kbd>Ctrl+N</kbd> opening a window) &mdash; if a key seems to do nothing, that is
-      almost always why, not a bug in the game.
+      almost always why, not a bug in the game. On a Mac, if <kbd>Alt</kbd>/<kbd>Option</kbd> combos
+      type accented characters instead, set Option to act as Meta in your browser or OS.
     </p>
   </section>
 
@@ -46,6 +50,14 @@
     <button id="btn-hint" class="hint-btn">Show hint (costs 10 points)</button>
     <div id="hint-box" class="hint-box hidden"></div>
 
+    <div id="explain" class="explain"></div>
+
+    <div id="demo-buffer" class="demo-buffer" aria-label="Demo buffer showing what the command does">
+      <pre class="demo-text"></pre>
+      <div class="demo-modeline"></div>
+      <div class="demo-echo"></div>
+    </div>
+
     <div id="keyboard" class="keyboard"></div>
   </section>
 
@@ -66,6 +78,9 @@
 </footer>
 
 <script src="keybindings.js"></script>
+<script src="all-keys.js"></script>
+<script src="demo-buffer.js"></script>
+<script src="explain.js"></script>
 <script src="emacs-notation.js"></script>
 <script src="keyboard-layout.js"></script>
 <script src="game.js"></script>

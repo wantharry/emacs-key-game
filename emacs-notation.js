@@ -14,6 +14,15 @@
 // for decades --- not something specific to Emacs). Only the home three rows are
 // mapped; anything else (function keys, arrows, etc.) is called out as "no standard
 // touch-typing finger for this one" rather than guessed.
+// US-layout Shift pairs: shifted symbol -> the unshifted key it lives on. Used both
+// for finger guidance and for highlighting the right physical key on the virtual
+// keyboard (a "!" round lights up Shift and the "1" key).
+const SHIFT_PAIRS = {
+  "~": "`", "!": "1", "@": "2", "#": "3", "$": "4", "%": "5", "^": "6", "&": "7", "*": "8",
+  "(": "9", ")": "0", "_": "-", "+": "=", "{": "[", "}": "]", "|": "\\", ":": ";", '"': "'",
+  "<": ",", ">": ".", "?": "/",
+};
+
 const FINGER_CHART = {};
 (function () {
   const rows = [
@@ -24,6 +33,9 @@ const FINGER_CHART = {};
   ];
   for (const [chars, hand, finger] of rows) {
     for (const ch of chars) FINGER_CHART[ch] = { hand, finger };
+  }
+  for (const [sym, base] of Object.entries(SHIFT_PAIRS)) {
+    if (FINGER_CHART[base]) FINGER_CHART[sym] = FINGER_CHART[base];
   }
 })();
 
@@ -41,7 +53,8 @@ const BRACKET_KEYS = {
   f9: "F9", f10: "F10", f11: "F11", f12: "F12",
   left: "ArrowLeft", right: "ArrowRight", up: "ArrowUp", down: "ArrowDown",
   home: "Home", end: "End", next: "PageDown", prior: "PageUp",
-  insert: "Insert", delete: "Delete",
+  insert: "Insert", delete: "Delete", backspace: "Backspace", escape: "Escape",
+  tab: "Tab", return: "Enter",
 };
 
 /** Split one Emacs chord token ("C-M-f", "M-s", "%", "<f3>") into
@@ -65,10 +78,13 @@ function parseChord(token) {
     finger = null; note = "no standard touch-typing finger for this one --- glance down";
   } else {
     browserKey = rest;
+    if (shift && /^[a-z]$/.test(rest)) browserKey = rest.toUpperCase(); // S-v is typed as "V"
     const chart = FINGER_CHART[rest.toLowerCase()];
     if (chart) { hand = chart.hand; finger = chart.finger; }
   }
-  return { ctrl, meta, shift, browserKey, display: rest, hand, finger, note };
+  const needsShift = shift || /^[A-Z]$/.test(browserKey) || !!SHIFT_PAIRS[browserKey];
+  const baseKey = SHIFT_PAIRS[browserKey] || (/^[A-Z]$/.test(browserKey) ? browserKey.toLowerCase() : browserKey);
+  return { ctrl, meta, shift: needsShift, browserKey, baseKey, display: rest, hand, finger, note };
 }
 
 /** Split a full Emacs key description ("C-x C-s", "M-s o") into chord tokens. */
@@ -84,10 +100,13 @@ function parseSequence(notation) {
 function chordMatches(e, c) {
   if (!!e.ctrlKey !== c.ctrl) return false;
   if (!!e.altKey !== c.meta) return false;
-  if (c.browserKey.length === 1) {
-    return e.key === c.browserKey;
-  }
-  return e.key === c.browserKey;
+  if (e.key === c.browserKey) return true;
+  // Tolerate layouts/OSes that report the UNshifted key with shiftKey set (e.g.
+  // key "5" + Shift for "%", or "v" + Shift for S-v) --- and the reverse for an
+  // unshifted chord, so a stray Shift on "C-x 5" still fails as it should.
+  if (c.shift && e.shiftKey && c.baseKey && e.key === c.baseKey) return true;
+  if (!c.shift && c.browserKey.length === 1 && !e.shiftKey && e.key.toLowerCase() === c.browserKey) return true;
+  return false;
 }
 
 /** Real, doc-sourced guidance for how to press one parsed chord comfortably. */
@@ -107,6 +126,10 @@ function chordGuidance(c) {
     );
   }
   if (c.meta) parts.push("hold Alt with your thumb");
+  if (c.shift) {
+    const shiftHand = c.hand === "L" ? "right" : c.hand === "R" ? "left" : "either";
+    parts.push(`hold Shift with your ${shiftHand} pinky`);
+  }
   parts.push(`press ${describeKey(c)}`);
   return capitalize(parts.join(", then ")) + ".";
 }
@@ -115,7 +138,8 @@ function describeKey(c) {
   if (c.note) return `${c.display} (${c.note})`;
   if (c.hand && c.finger) {
     const handWord = c.hand === "L" ? "left" : "right";
-    return `${c.display} with your ${handWord} ${c.finger}`;
+    const onKey = c.baseKey && c.baseKey !== c.browserKey ? ` (the ${c.baseKey} key)` : "";
+    return `${c.display}${onKey} with your ${handWord} ${c.finger}`;
   }
   return c.display;
 }

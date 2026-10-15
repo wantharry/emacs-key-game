@@ -10,8 +10,8 @@ const KEYBOARD_ROWS = [
    ["y", "y"], ["u", "u"], ["i", "i"], ["o", "o"], ["p", "p"], ["[", "["], ["]", "]"], ["\\", "\\"]],
   [["Ctrl", null, "wide", "ctrl-left"], ["a", "a"], ["s", "s"], ["d", "d"], ["f", "f"], ["g", "g"],
    ["h", "h"], ["j", "j"], ["k", "k"], ["l", "l"], [";", ";"], ["'", "'"], ["Enter", "Enter", "wide"]],
-  [["Shift", null, "wide"], ["z", "z"], ["x", "x"], ["c", "c"], ["v", "v"], ["b", "b"],
-   ["n", "n"], ["m", "m"], [",", ","], [".", "."], ["/", "/"], ["Shift", null, "wide"]],
+  [["Shift", null, "wide", "shift-left"], ["z", "z"], ["x", "x"], ["c", "c"], ["v", "v"], ["b", "b"],
+   ["n", "n"], ["m", "m"], [",", ","], [".", "."], ["/", "/"], ["Shift", null, "wide", "shift-right"]],
   [["Ctrl", null, "wide", "ctrl-left"], ["Alt", null, "wide", "alt-left"], ["Space", " ", "space"],
    ["Alt", null, "wide", "alt-right"], ["Ctrl", null, "wide", "ctrl-right"]],
 ];
@@ -25,7 +25,13 @@ function renderKeyboard() {
     for (const [label, browserKey, widthClass, dataKey] of row) {
       const keyEl = document.createElement("div");
       keyEl.className = "kb-key" + (widthClass ? ` kb-${widthClass}` : "");
-      keyEl.textContent = label;
+      const shifted = browserKey && Object.keys(SHIFT_PAIRS).find((k) => SHIFT_PAIRS[k] === browserKey);
+      if (shifted) {
+        keyEl.innerHTML = `<span class="kb-shift">${shifted.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]))}</span>${label}`;
+        keyEl.dataset.shiftkey = shifted;
+      } else {
+        keyEl.textContent = label;
+      }
       if (browserKey !== null && browserKey !== undefined) keyEl.dataset.browserkey = browserKey;
       if (dataKey) keyEl.dataset.key = dataKey;
       rowEl.appendChild(keyEl);
